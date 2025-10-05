@@ -1,0 +1,64 @@
+//**Equal Sum Partition Problem Based on 0-1 Knapsack Problem**//
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Helper function — subset sum (top-down)
+bool subsetSum(int arr[], int n, int sum) {
+    bool dp[n + 1][sum + 1];
+
+    //  Initialization
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= sum; j++) {
+            if (i == 0)
+                dp[i][j] = false;
+            if (j == 0)
+                dp[i][j] = true;
+        }
+    }
+
+    //  Build the table
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= sum; j++) {
+            if (arr[i - 1] <= j)
+                dp[i][j] = dp[i - 1][j - arr[i - 1]] || dp[i - 1][j];
+            else
+                dp[i][j] = dp[i - 1][j];
+        }
+    }
+
+    // At Last Index Return result
+    return dp[n][sum];
+}
+
+// Main function — equal partition
+bool equalPartition(int arr[], int n) {
+    int totalSum = 0;
+    for (int i = 0; i < n; i++)
+        totalSum += arr[i];
+
+    // If total sum is odd → can't divide into two equal parts
+    if (totalSum % 2 != 0)
+        return false;
+
+    // Else, check if subset with sum = totalSum/2 exists
+    return subsetSum(arr, n, totalSum / 2);
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter array elements: ";
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+
+    if (equalPartition(arr, n))
+        cout << "Can be divided into two subsets with equal sum " << endl;
+    else
+        cout << "Cannot be divided into two subsets with equal sum " << endl;
+
+    return 0;
+}
