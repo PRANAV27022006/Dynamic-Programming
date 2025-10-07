@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int unboundedKnapsack(int W, vector<int>& wt, vector<int>& val, int n) {
+    // Create DP table
+    vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
+
+    // Build table bottom-up
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= W; j++) {
+            if (wt[i - 1] <= j) {
+                // You can take the same item again (i not decreased)
+                dp[i][j] = max(val[i - 1] + dp[i][j - wt[i - 1]],  // take it
+                               dp[i - 1][j]);                     // skip it
+            } else {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+
+    return dp[n][W];
+}
+
+int main() {
+  
+
+    int n, W;
+    cout << "Enter number of items: ";
+    cin >> n;
+
+    vector<int> wt(n), val(n);
+    cout << "Enter weights of items:\n";
+    for (int i = 0; i < n; i++)
+        cin >> wt[i];
+
+    cout << "Enter values of items:\n";
+    for (int i = 0; i < n; i++)
+        cin >> val[i];
+
+    cout << "Enter capacity of knapsack: ";
+    cin >> W;
+
+    int maxProfit = unboundedKnapsack(W, wt, val, n);
+
+    cout << "\nMaximum Profit: " << maxProfit << "\n";
+
+    return 0;
+}
